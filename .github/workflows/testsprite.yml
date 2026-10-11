@@ -1,0 +1,37 @@
+name: TestSprite Continuous Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: TestSprite 3.0 Verification Gate
+    runs-on: ubuntu-latest
+    # Skip forks so absence of repository secrets doesn't fail community runs
+    if: github.repository == 'naufalfx805-source/agentpulse'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Run TestSprite Autonomous Verification
+        uses: TestSprite/testsprite-action@v1
+        continue-on-error: true
+        with:
+          api-key: ${{ secrets.TESTSPRITE_API_KEY }}
+          project-id: ${{ secrets.TESTSPRITE_PROJECT_ID }}
+          fail-on-skipped: false
