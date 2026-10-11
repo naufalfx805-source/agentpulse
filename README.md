@@ -1,11 +1,13 @@
 # ⚡ AgentPulse — Autonomous AI Agent Verification & Self-Healing Ops
 
 [![TestSprite 3.0 Verified](https://img.shields.io/badge/TestSprite%203.0-Verified-10b981.svg)](https://testsprite.com)
+[![Live Demo](https://img.shields.io/badge/Demo-agentpulse--pi.vercel.app-blueviolet.svg)](https://agentpulse-pi.vercel.app)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16%20App%20Router-black.svg)](https://nextjs.org)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind-v4-38bdf8.svg)](https://tailwindcss.com)
 
 > Built for **TestSprite Hackathon Season 4** (Project Track & Continuous Verification Showcase).  
+> **Live Production**: [https://agentpulse-pi.vercel.app](https://agentpulse-pi.vercel.app)  
 > **Author**: Naufal ([@naufalfx805-source](https://github.com/naufalfx805-source)) • **Discord**: `@npall_805` • **Contact**: `naufalfx805@gmail.com`
 
 ---
