@@ -1,69 +1,162 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { Navbar, ActiveTab } from '../components/Navbar';
+import { DashboardView } from '../components/DashboardView';
+import { PipelineStudioView } from '../components/PipelineStudioView';
+import { ScenarioStudioView } from '../components/ScenarioStudioView';
+import { ChaosSimulatorView } from '../components/ChaosSimulatorView';
+import { SelfHealingLoopView } from '../components/SelfHealingLoopView';
+import { SettingsView } from '../components/SettingsView';
+import { INITIAL_PIPELINES, INITIAL_SCENARIOS, INITIAL_EVENTS } from '../data/mockData';
+import { AgentPipeline, TestScenario, VerificationEvent } from '../types/agent';
+import { ShieldCheck, Heart, Sparkles, ExternalLink } from 'lucide-react';
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [env, setEnv] = useState<'production' | 'staging' | 'local'>('staging');
+  const [pipelines, setPipelines] = useState<AgentPipeline[]>(INITIAL_PIPELINES);
+  const [scenarios, setScenarios] = useState<TestScenario[]>(INITIAL_SCENARIOS);
+  const [events, setEvents] = useState<VerificationEvent[]>(INITIAL_EVENTS);
+
+  // Trigger simulated live pipeline execution
+  const handleTriggerRun = (pipelineId: string) => {
+    setPipelines((prev) =>
+      prev.map((p) => {
+        if (p.id !== pipelineId) return p;
+        return {
+          ...p,
+          status: 'running',
+          steps: p.steps.map((s, idx) => ({
+            ...s,
+            status: idx === 0 ? 'running' : 'pending',
+          })),
+        };
+      })
+    );
+
+    // Step-by-step simulated advancement
+    let stepIndex = 0;
+    const interval = setInterval(() => {
+      stepIndex++;
+      setPipelines((prev) =>
+        prev.map((p) => {
+          if (p.id !== pipelineId) return p;
+          const updatedSteps = p.steps.map((s, idx) => {
+            if (idx < stepIndex) return { ...s, status: 'success' as const };
+            if (idx === stepIndex) return { ...s, status: 'running' as const };
+            return { ...s, status: 'pending' as const };
+          });
+
+          const isDone = stepIndex >= p.steps.length;
+          return {
+            ...p,
+            status: isDone ? ('passed' as const) : ('running' as const),
+            lastRunAt: 'Just now',
+            steps: updatedSteps,
+          };
+        })
+      );
+
+      if (stepIndex >= 4) {
+        clearInterval(interval);
+        // Log event
+        const newEvt: VerificationEvent = {
+          id: `evt-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString(),
+          pipelineId,
+          pipelineName: pipelines.find((p) => p.id === pipelineId)?.name || 'Pipeline',
+          eventType: 'run_passed',
+          severity: 'success',
+          message: 'Headed browser verification run completed cleanly. All 26 TestSprite assertions passed.',
+        };
+        setEvents((prev) => [newEvt, ...prev]);
+      }
+    }, 700);
+  };
+
+  const handleAddScenario = (newScenario: TestScenario) => {
+    setScenarios((prev) => [newScenario, ...prev]);
+    const newEvt: VerificationEvent = {
+      id: `evt-${Date.now()}`,
+      timestamp: new Date().toLocaleTimeString(),
+      pipelineId: 'pipe-01',
+      pipelineName: 'TestSprite 3.0 Sync',
+      eventType: 'run_started',
+      severity: 'info',
+      message: `Registered new test scenario: "${newScenario.title}" targeting ${newScenario.targetPath}.`,
+    };
+    setEvents((prev) => [newEvt, ...prev]);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        env={env}
+        setEnv={setEnv}
+      />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'dashboard' && (
+          <DashboardView
+            pipelines={pipelines}
+            scenarios={scenarios}
+            events={events}
+            onTriggerRun={handleTriggerRun}
+            onNavigateTab={setActiveTab}
+          />
+        )}
+        {activeTab === 'pipelines' && (
+          <PipelineStudioView
+            pipelines={pipelines}
+            onTriggerRun={handleTriggerRun}
+          />
+        )}
+        {activeTab === 'scenarios' && (
+          <ScenarioStudioView
+            scenarios={scenarios}
+            onAddScenario={handleAddScenario}
+          />
+        )}
+        {activeTab === 'simulator' && <ChaosSimulatorView />}
+        {activeTab === 'selfhealing' && <SelfHealingLoopView />}
+        {activeTab === 'settings' && <SettingsView env={env} setEnv={setEnv} />}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-900 bg-slate-950/80 backdrop-blur-md py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex items-center space-x-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span className="font-semibold text-slate-300">AgentPulse</span>
+            <span>— Built for TestSprite Hackathon Season 4</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <a
+              href="https://www.testsprite.com/hackathon-s4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition-colors flex items-center space-x-1"
+            >
+              <span>TestSprite Season 4</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span>•</span>
+            <a
+              href="https://github.com/naufalfx805-source"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition-colors"
+            >
+              @naufalfx805-source
+            </a>
+            <span>•</span>
+            <span className="font-mono text-slate-400">Discord: @npall_805</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
