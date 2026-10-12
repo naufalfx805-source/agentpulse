@@ -34,6 +34,17 @@ As AI agents (Antigravity, Cursor, Claude Code, Codex) increasingly generate pro
 
 ---
 
+## 🎬 Video Demo Assets (Generated & Ready)
+
+We recorded an automated, high-fidelity 720p HD walkthrough video capturing the live Vercel app, interactive pipeline DAG, chaos simulations, and Pull Request #1 verification:
+
+- **Subtitled Video**: [`videos/agentpulse-demo-with-subtitles.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-with-subtitles.mp4) (7.8 MB, 01:30 Duration, 720p HD, Burned-in Subtitles)
+- **Clean Walkthrough Video**: [`videos/agentpulse-demo-walkthrough.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-walkthrough.mp4) (8.0 MB, 01:30 Duration, 720p HD)
+- **Subtitle Track**: [`videos/agentpulse-demo-walkthrough.srt`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-walkthrough.srt)
+- **Automated Re-recording Script**: [`scripts/record-demo-video.mjs`](file:///C:/Users/naufa/agentpulse/scripts/record-demo-video.mjs)
+
+---
+
 ## 🎬 2-Minute Video Demo Script
 
 ### [0:00 - 0:25] The Problem & The Mission
