@@ -8,8 +8,8 @@ import assert from 'node:assert/strict';
 
 export function calculateFleetReliability(passedRuns, totalRuns) {
   if (totalRuns <= 0) return 100.0;
-  // Intentional regression introduced to test autonomous TestSprite CI gate
-  return Number(((passedRuns / (totalRuns + 10)) * 100).toFixed(1));
+  // Remediated via autonomous self-healing agent loop
+  return Number(((passedRuns / totalRuns) * 100).toFixed(1));
 }
 
 export function validateScenarioDefinition(scenario) {
