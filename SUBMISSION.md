@@ -38,8 +38,10 @@ As AI agents (Antigravity, Cursor, Claude Code, Codex) increasingly generate pro
 
 We recorded an automated, high-fidelity 720p HD walkthrough video capturing the live Vercel app, interactive pipeline DAG, chaos simulations, and Pull Request #1 verification:
 
-- **Subtitled Video**: [`videos/agentpulse-demo-with-subtitles.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-with-subtitles.mp4) (7.8 MB, 01:30 Duration, 720p HD, Burned-in Subtitles)
-- **Clean Walkthrough Video**: [`videos/agentpulse-demo-walkthrough.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-walkthrough.mp4) (8.0 MB, 01:30 Duration, 720p HD)
+- **Official Demo Video (CDN Direct Link)**: [Watch / Download Subtitled Demo (720p HD MP4)](https://github.com/naufalfx805-source/agentpulse/releases/download/v1.0.0/agentpulse-demo-with-subtitles.mp4)
+- **GitHub Release Package**: [AgentPulse v1.0.0 Release Tag](https://github.com/naufalfx805-source/agentpulse/releases/tag/v1.0.0)
+- **Local Subtitled Video**: [`videos/agentpulse-demo-with-subtitles.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-with-subtitles.mp4) (7.8 MB, 01:30 Duration, 720p HD, Burned-in Subtitles)
+- **Local Clean Walkthrough Video**: [`videos/agentpulse-demo-walkthrough.mp4`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-walkthrough.mp4) (8.0 MB, 01:30 Duration, 720p HD)
 - **Subtitle Track**: [`videos/agentpulse-demo-walkthrough.srt`](file:///C:/Users/naufa/agentpulse/videos/agentpulse-demo-walkthrough.srt)
 - **Automated Re-recording Script**: [`scripts/record-demo-video.mjs`](file:///C:/Users/naufa/agentpulse/scripts/record-demo-video.mjs)
 
@@ -75,6 +77,7 @@ I'm excited to share **AgentPulse** — built for Track A (Project Track) of Hac
 
 🌐 **Live App**: https://agentpulse-pi.vercel.app
 📁 **GitHub Repo**: https://github.com/naufalfx805-source/agentpulse
+🎬 **Demo Video**: https://github.com/naufalfx805-source/agentpulse/releases/download/v1.0.0/agentpulse-demo-with-subtitles.mp4
 🔁 **Self-Healing Loop Evidence**: https://github.com/naufalfx805-source/agentpulse/pull/1
 
 **What is AgentPulse?**
