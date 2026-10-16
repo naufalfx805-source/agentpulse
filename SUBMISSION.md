@@ -67,27 +67,29 @@ Fourth, TestSprite immediately re-tested the patch, all 7 verification gates tur
 
 ---
 
-## 💬 Discord & Community Showcase Post
+## 💬 Discord #hackathon-submissions Official Post Template
 
 ```markdown
-🚀 **Introducing AgentPulse: Autonomous AI Agent Verification & Self-Healing Ops (TestSprite Season 4)**
+🚀 **Submission: AgentPulse — Autonomous AI Agent Verification & Self-Healing Ops (Season 4 Project Track)**
 
-Hey TestSprite community! 👋
-I'm excited to share **AgentPulse** — built for Track A (Project Track) of Hackathon Season 4!
+1. **Pull Request with TestSprite Check (Required)**:
+https://github.com/naufalfx805-source/agentpulse/pull/1
+*(Demonstrates the full 4-step Self-Healing Loop: regression caught in CI af6b8e6 -> diagnostic bundle fed to agent -> fix committed c63fd95 -> TestSprite re-tested 100% green -> merged d413519)*
 
-🌐 **Live App**: https://agentpulse-pi.vercel.app
-📁 **GitHub Repo**: https://github.com/naufalfx805-source/agentpulse
-🎬 **Demo Video**: https://github.com/naufalfx805-source/agentpulse/releases/download/v1.0.0/agentpulse-demo-with-subtitles.mp4
-🔁 **Self-Healing Loop Evidence**: https://github.com/naufalfx805-source/agentpulse/pull/1
+2. **Live Public URL (Required)**:
+https://agentpulse-pi.vercel.app
 
-**What is AgentPulse?**
-When AI agents write code in production, human review is the bottleneck. AgentPulse establishes a closed-loop autonomous verification pipeline:
-1. **Maker**: Agent commits code.
-2. **Checker**: TestSprite 3.0 Verification Gate catches regressions in CI.
-3. **Maker**: Self-healing agent ingests failure diagnostics and pushes the patch.
-4. **Checker**: TestSprite verifies the patch green and auto-merges!
+3. **TestSprite Account (Required)**:
+- **Email**: `naufalfx805@gmail.com`
+- **Name / Display**: `Naufal` (`NPALL` / `@npall_805`)
+- **GitHub**: `@naufalfx805-source`
 
-Check out our interactive Pipeline DAG Studio, Chaos Injection Simulator, and live fleet telemetry. Would love to hear your feedback!
+4. **Demo Video Walkthrough (Optional / Encouraged)**:
+https://github.com/naufalfx805-source/agentpulse/releases/download/v1.0.0/agentpulse-demo-with-subtitles.mp4
+*(1:30 HD Walkthrough with burned-in subtitles covering live telemetry, DAG Studio, chaos simulator, and PR #1)*
 
-Discord: `@npall_805`
+5. **Public Repository**:
+https://github.com/naufalfx805-source/agentpulse
+*(Complete with Next.js 16.4 source, GitHub Actions workflow with TestSprite Action v1, and detailed suite coverage)*
 ```
+
