@@ -1,0 +1,19 @@
+Sign in to TestSprite
+Continue with Google
+Continue with GitHub
+OR
+Email
+Password
+Forgot password?
+Continue
+Don't have an account? Create an account
+By proceeding, you agree to our Terms of use and Privacy policy
+Agentic testing for every change you ship.
+TestSprite plans the tests, runs them on your app, and tells you exactly what broke.
+PR #482, checkout
+3 of 4 tests passed
+Add an item to the cart
+Apply SAVE20 at checkout
+Apply SAVE20 a second time
+The discount applied twice: $64.00, expected $80.00.
+Check out as a guest
