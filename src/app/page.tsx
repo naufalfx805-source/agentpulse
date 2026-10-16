@@ -7,8 +7,9 @@ import { PipelineStudioView } from '../components/PipelineStudioView';
 import { ScenarioStudioView } from '../components/ScenarioStudioView';
 import { ChaosSimulatorView } from '../components/ChaosSimulatorView';
 import { SelfHealingLoopView } from '../components/SelfHealingLoopView';
+import { TestHealthMonitorView } from '../components/TestHealthMonitorView';
 import { SettingsView } from '../components/SettingsView';
-import { INITIAL_PIPELINES, INITIAL_SCENARIOS, INITIAL_EVENTS } from '../data/mockData';
+import { INITIAL_PIPELINES, INITIAL_SCENARIOS, INITIAL_EVENTS, INITIAL_TEST_HEALTH_METRICS, INITIAL_TEST_RUN_HISTORY, INITIAL_TEST_HEALTH_ALERTS } from '../data/mockData';
 import { AgentPipeline, TestScenario, VerificationEvent } from '../types/agent';
 import { ShieldCheck, Heart, Sparkles, ExternalLink } from 'lucide-react';
 
@@ -122,6 +123,14 @@ export default function Home() {
         )}
         {activeTab === 'simulator' && <ChaosSimulatorView />}
         {activeTab === 'selfhealing' && <SelfHealingLoopView />}
+        {activeTab === 'healthmonitor' && (
+          <TestHealthMonitorView
+            metrics={INITIAL_TEST_HEALTH_METRICS}
+            runHistory={INITIAL_TEST_RUN_HISTORY}
+            alerts={INITIAL_TEST_HEALTH_ALERTS}
+            scenarios={scenarios}
+          />
+        )}
         {activeTab === 'settings' && <SettingsView env={env} setEnv={setEnv} />}
       </main>
 

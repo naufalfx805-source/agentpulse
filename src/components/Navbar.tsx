@@ -10,9 +10,10 @@ import {
   RotateCcw,
   Settings,
   ExternalLink,
+  HeartPulse,
 } from 'lucide-react';
 
-export type ActiveTab = 'dashboard' | 'pipelines' | 'scenarios' | 'simulator' | 'selfhealing' | 'settings';
+export type ActiveTab = 'dashboard' | 'pipelines' | 'scenarios' | 'simulator' | 'selfhealing' | 'healthmonitor' | 'settings';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -28,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, env, se
     { id: 'scenarios' as ActiveTab, label: 'Test Scenarios', icon: Cpu },
     { id: 'simulator' as ActiveTab, label: 'Chaos & Webhooks', icon: Zap },
     { id: 'selfhealing' as ActiveTab, label: 'The TestSprite Loop', icon: RotateCcw, highlight: true },
+    { id: 'healthmonitor' as ActiveTab, label: 'Test Health', icon: HeartPulse, highlight: true },
     { id: 'settings' as ActiveTab, label: 'Settings', icon: Settings },
   ];
 

@@ -59,3 +59,30 @@ export interface ChaosConfig {
   simulateFlakyNetwork: boolean;
   injectedErrorCode: number;
 }
+
+export interface TestHealthMetrics {
+  totalTests: number;
+  passRate: number;
+  avgDurationMs: number;
+  flakyCount: number;
+  lastRunAt: string;
+  healthScore: number;
+}
+
+export interface TestRunHistory {
+  runId: string;
+  timestamp: string;
+  passed: number;
+  failed: number;
+  flaky: number;
+  totalDurationMs: number;
+}
+
+export interface TestHealthAlert {
+  id: string;
+  severity: 'info' | 'warning' | 'critical';
+  title: string;
+  description: string;
+  timestamp: string;
+  testId?: string;
+}
