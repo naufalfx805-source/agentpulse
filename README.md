@@ -47,6 +47,23 @@ As AI agents write and deploy code in production, traditional manual QA is a bot
 
 ---
 
+## 🧪 What the Test Suite Covers
+
+In accordance with TestSprite Hackathon Season 4 submission criteria, the autonomous verification suite covers end-to-end functionality, regression guards, and API resilience:
+
+| Suite ID | Category | Scenario & Scope | Assertions & Validation |
+|:---|:---|:---|:---|
+| **E2E-01** | UI / Pipeline Studio | Visual DAG Canvas & Node Transitions | Validates pipeline topology, step sequencing (Lint &rarr; E2E &rarr; Telemetry), and state propagation without UI deadlocks. |
+| **E2E-02** | Telemetry | Fleet Success Rate & MTTR Engine | Tests streaming metric ingestion, rolling 24h calculations, and mathematical safety against zero-division errors. |
+| **E2E-03** | Chaos Engine | Webhook Simulator & Network Latency | Injects 500ms–2500ms simulated network latency, verifying graceful UI fallback, retry headers, and zero uncaught exceptions. |
+| **E2E-04** | Scenario Portal | Real-time Scenario Creation Form | Verifies client-side validation schema, rejection of empty/whitespace IDs, and instant synchronization with local state. |
+| **REG-01** | Regression Guard | Fleet Reliability Precision Flaw | **Demonstrated in PR #1**: Traps precision truncation regression in reliability math and validates automated self-healing fix. |
+| **API-01** | Contract / Health | Synthetic Telemetry Ingestion Endpoint | Enforces JSON schema contract, HTTP 200 response time (< 200ms), and proper error code responses on bad payloads. |
+| **SEC-01** | Security Guard | Secret & Token Sanitization | Ensures sensitive environment variables, GitHub tokens, and API credentials are never leaked in client-side traces or logs. |
+
+---
+
+
 ## 🛠️ Architecture & Tech Stack
 
 - **Framework**: Next.js 16.4 (App Router, Turbopack)
