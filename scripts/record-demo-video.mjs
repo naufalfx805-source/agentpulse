@@ -148,9 +148,9 @@ async function record() {
   await smoothScroll(page, -450);
   await sleep(1500);
 
-  // --- ACT 7: TRACK B PROOF (TESTSPRITE CLI PR #386) ---
-  console.log('🛠️ Act 7: Upstream Track B Proof — TestSprite CLI PR #386');
-  await page.goto('https://github.com/TestSprite/testsprite-cli/pull/386', { waitUntil: 'networkidle' });
+  // --- ACT 7: TRACK B PROOF (TESTSPRITE CLI PR #354) ---
+  console.log('🛠️ Act 7: Upstream Track B Proof — TestSprite CLI PR #354');
+  await page.goto('https://github.com/TestSprite/testsprite-cli/pull/354', { waitUntil: 'networkidle' });
   await sleep(3000);
   await smoothScroll(page, 400);
   await sleep(4000);

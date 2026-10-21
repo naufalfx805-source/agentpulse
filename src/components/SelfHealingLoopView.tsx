@@ -213,7 +213,7 @@ All 26/26 Scenarios Passed (0 flakiness).
             rel="noopener noreferrer"
             className="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 text-xs font-mono font-semibold transition-colors"
           >
-            <span>PR #354 (21/21 CI Workflows Green)</span>
+            <span>PR #354 (TestSprite CI green)</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
           <span className="text-xs text-slate-500 font-mono">
