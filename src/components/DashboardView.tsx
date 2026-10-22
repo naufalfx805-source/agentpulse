@@ -21,6 +21,8 @@ interface DashboardViewProps {
   events: VerificationEvent[];
   onTriggerRun: (pipelineId: string) => void;
   onNavigateTab: (tab: any) => void;
+  /** Open one monitored pipeline in Pipeline Studio. */
+  onOpenPipeline: (pipelineId: string) => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -29,6 +31,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   events,
   onTriggerRun,
   onNavigateTab,
+  onOpenPipeline,
 }) => {
   const avgSuccessRate = (
     pipelines.reduce((acc, p) => acc + p.successRate, 0) / pipelines.length
@@ -172,7 +175,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-slate-200">{pipeline.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => onOpenPipeline(pipeline.id)}
+                        className="font-bold text-slate-200 hover:text-emerald-300 text-left transition-colors"
+                      >
+                        {pipeline.name}
+                      </button>
                       <span className="px-2 py-0.5 text-xs rounded-md bg-slate-800 text-slate-400 font-mono">
                         {pipeline.agentModel}
                       </span>
@@ -185,6 +194,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       {pipeline.successRate}% Success
                     </span>
+                    <button
+                      type="button"
+                      onClick={() => onOpenPipeline(pipeline.id)}
+                      aria-label={`View details of ${pipeline.name}`}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                    >
+                      View Details
+                    </button>
                     <button
                       onClick={() => onTriggerRun(pipeline.id)}
                       disabled={pipeline.status === 'running'}

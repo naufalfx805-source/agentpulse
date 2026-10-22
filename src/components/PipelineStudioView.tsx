@@ -17,13 +17,18 @@ import { AgentPipeline } from '../types/agent';
 interface PipelineStudioViewProps {
   pipelines: AgentPipeline[];
   onTriggerRun: (pipelineId: string) => void;
+  /** Pipeline to show first, e.g. when opened from a Fleet Overview card. */
+  initialPipelineId?: string;
 }
 
 export const PipelineStudioView: React.FC<PipelineStudioViewProps> = ({
   pipelines,
   onTriggerRun,
+  initialPipelineId,
 }) => {
-  const [selectedPipelineId, setSelectedPipelineId] = useState(pipelines[0]?.id || '');
+  const [selectedPipelineId, setSelectedPipelineId] = useState(
+    pipelines.some((p) => p.id === initialPipelineId) ? (initialPipelineId as string) : pipelines[0]?.id || ''
+  );
   const [tokenBudget, setTokenBudget] = useState(32000);
   const [timeoutSeconds, setTimeoutSeconds] = useState(300);
   const [activeStepTab, setActiveStepTab] = useState<string | null>(null);
