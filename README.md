@@ -16,7 +16,7 @@
 
 **AgentPulse** is a mission-control observability and autonomous verification platform designed for developers building with modern AI agents (Antigravity, Claude Code, Codex, Cursor).
 
-As AI agents write and deploy code in production, traditional manual QA is a bottleneck. AgentPulse pairs continuous telemetry with **TestSprite 3.0** autonomous testing to establish **"The Self-Healing Loop"**: every pull request triggers the TestSprite GitHub App, which runs the project's 33-case end-to-end suite against the live app; when a regression is caught, the failure report goes back to the coding agent to fix the root cause, and the check reruns on its own.
+As AI agents write and deploy code in production, traditional manual QA is a bottleneck. AgentPulse pairs continuous telemetry with **TestSprite 3.0** autonomous testing to establish **"The Self-Healing Loop"**: every pull request gets its own Vercel preview, and the TestSprite GitHub App runs the project's end-to-end suite against that preview. When a regression is caught, the check fails and blocks the merge, the failure report goes back to the coding agent to fix the root cause, and the check reruns on its own.
 
 ---
 
@@ -49,13 +49,13 @@ As AI agents write and deploy code in production, traditional manual QA is a bot
 
 ## 🧪 What the Test Suite Covers
 
-The end-to-end suite lives in the TestSprite 3.0 web portal (project `agentpulse-pi`). It was generated from the live app at https://agentpulse-pi.vercel.app and has **33 test cases across 5 use cases**, all passing on the latest run:
+The end-to-end suite lives in the TestSprite 3.0 web portal (project `agentpulse-pi`). It was generated from the live app at https://agentpulse-pi.vercel.app and has **37 test cases across 5 use cases**:
 
 | Use case | Cases | What it verifies |
 |:---|:---:|:---|
 | **Fleet Overview** (`FLE-001`–`FLE-005`) | 5 | Fleet health KPIs render; the overview links through to the pipeline workflow, the self-healing loop, monitored pipelines and live verification activity. |
 | **Pipeline Studio** (`PIP-001`–`PIP-006`) | 6 | Running the default verification pipeline, the execution DAG, guardrail configuration, switching pipeline presets, remediation on failure, and the telemetry summary. |
-| **Test Scenarios** (`SCE-001`–`SCE-010`) | 10 | The scenario repository: browsing, filtering by category, opening a scenario, the new-scenario flow, running a pipeline from the studio, policy and guardrail review, and navigation to the loop and fleet views. |
+| **Test Scenarios** (`SCE-001`–`SCE-014`) | 14 | The scenario repository: browsing, filtering by category, opening a scenario, the new-scenario flow, running a pipeline from the studio, policy and guardrail review, and navigation to the loop and fleet views. `SCE-011`–`SCE-014` cover input validation in the new-scenario form: expected status codes outside 100–599, or empty, are rejected, and target paths are trimmed. |
 | **Self-Healing Verification Loop** (`LOO-001`–`LOO-006`) | 6 | The loop overview and each stage (write, test, fix, test again), ending with the loop closing on a pushed commit. |
 | **Chaos Testing & Webhook Simulation** (`CHA-001`–`CHA-006`) | 6 | Dispatching a simulated webhook, latency and assertion-fault injection, model-quota exhaustion, jitter and packet-drop simulation, and the resulting fleet metrics. |
 
@@ -70,7 +70,7 @@ Unit tests (`npm test`, Node's built-in test runner over [`tests/`](tests/)) run
 - **Language**: TypeScript (Strict typing)
 - **Styling**: Tailwind CSS v4 + Custom Cybernetic Dark Glassmorphism
 - **Icons**: Lucide React
-- **Automated Verification**: TestSprite 3.0 web portal suite (33 E2E cases) run by the TestSprite GitHub App on every pull request, plus build and unit tests in GitHub Actions
+- **Automated Verification**: TestSprite 3.0 web portal suite (37 E2E cases) run by the TestSprite GitHub App against every pull request's Vercel preview, behind a merge gate; build and unit tests in GitHub Actions
 
 ---
 
@@ -97,7 +97,7 @@ npm run dev
 
 Every pull request gets two independent checks:
 
-1. **TestSprite GitHub App (end-to-end).** The TestSprite GitHub App is installed on this repo, and a pull-request trigger in the TestSprite portal (project `agentpulse-pi`) fires once CI finishes. TestSprite then runs the 33-case suite against the live app and posts its report as a `testsprite` comment on the PR, updating it in place while the run progresses.
+1. **TestSprite GitHub App (end-to-end).** Every pull request gets a Vercel preview deployment. A pull-request trigger in the TestSprite portal (project `agentpulse-pi`) fires when that preview is live, runs the full suite against the PR's own preview URL, and posts its report as a `testsprite` comment on the PR. The merge gate is on: TestSprite reports a status check, and branch protection on `main` requires it, so a PR can't merge until the suite passes.
 2. **GitHub Actions: `Build & Unit Tests`** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `npm ci`, `npm run build` and `npm test`.
 
 When either check fails, the failure report goes back to the coding agent, which fixes the root cause and pushes; both checks then rerun on their own.

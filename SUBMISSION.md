@@ -16,7 +16,7 @@
 As AI agents (Antigravity, Cursor, Claude Code, Codex) increasingly generate production code at scale, traditional manual quality assurance collapses. Software cannot rely on fragile human reviews for autonomous continuous delivery.
 
 **AgentPulse** solves this by establishing **"The Self-Healing Loop"** using **TestSprite 3.0**:
-1. When an agent opens or updates a pull request, CI runs the build and unit tests, then the TestSprite GitHub App runs the 33-case end-to-end suite against the live app.
+1. When an agent opens or updates a pull request, Vercel deploys a preview, and the TestSprite GitHub App runs the 37-case end-to-end suite against that preview; CI runs the build and unit tests in parallel.
 2. If tests catch a bug or regression, a structured failure diagnostic payload is dispatched to the agent.
 3. The agent autonomously synthesizes the fix, patches the codebase, and pushes the remediation commit.
 4. Both checks rerun automatically on the new commit, and the PR goes green.
@@ -28,7 +28,7 @@ As AI agents (Antigravity, Cursor, Claude Code, Codex) increasingly generate pro
 | Criterion (weight) | Where to look |
 | :--- | :--- |
 | **Project quality** (40) | The live app at https://agentpulse-pi.vercel.app: fleet telemetry, the pipeline DAG studio, the scenario repository, the chaos and webhook simulator, and the self-healing loop inspector. |
-| **Tests that run themselves** (40) | TestSprite portal project `agentpulse-pi` (33 E2E cases across 5 use cases, all passing), run by the TestSprite GitHub App on every pull request, plus `Build & Unit Tests` in GitHub Actions. |
+| **Tests that run themselves** (40) | TestSprite portal project `agentpulse-pi` (37 E2E cases across 5 use cases), run by the TestSprite GitHub App against every pull request's own Vercel preview, with a merge gate that blocks the PR until the suite passes; plus `Build & Unit Tests` in GitHub Actions. |
 | **Innovation** (20) | The app visualises and simulates the same agent-and-verifier loop that TestSprite runs on this repo's own pull requests. |
 
 ---
