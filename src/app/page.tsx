@@ -19,6 +19,13 @@ export default function Home() {
   const [pipelines, setPipelines] = useState<AgentPipeline[]>(INITIAL_PIPELINES);
   const [scenarios, setScenarios] = useState<TestScenario[]>(INITIAL_SCENARIOS);
   const [events, setEvents] = useState<VerificationEvent[]>(INITIAL_EVENTS);
+  const [focusedPipelineId, setFocusedPipelineId] = useState<string | undefined>(undefined);
+
+  // Open one monitored pipeline from a Fleet Overview card in Pipeline Studio
+  const handleOpenPipeline = (pipelineId: string) => {
+    setFocusedPipelineId(pipelineId);
+    setActiveTab('pipelines');
+  };
 
   // Trigger simulated live pipeline execution
   const handleTriggerRun = (pipelineId: string) => {
@@ -107,12 +114,14 @@ export default function Home() {
             events={events}
             onTriggerRun={handleTriggerRun}
             onNavigateTab={setActiveTab}
+            onOpenPipeline={handleOpenPipeline}
           />
         )}
         {activeTab === 'pipelines' && (
           <PipelineStudioView
             pipelines={pipelines}
             onTriggerRun={handleTriggerRun}
+            initialPipelineId={focusedPipelineId}
           />
         )}
         {activeTab === 'scenarios' && (

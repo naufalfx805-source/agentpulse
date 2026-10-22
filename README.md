@@ -16,7 +16,7 @@
 
 **AgentPulse** is a mission-control observability and autonomous verification platform designed for developers building with modern AI agents (Antigravity, Claude Code, Codex, Cursor).
 
-As AI agents write and deploy code in production, traditional manual QA is a bottleneck. AgentPulse pairs continuous telemetry with **TestSprite 3.0** autonomous testing to establish **"The Self-Healing Loop"**: every pull request is tested headless by TestSprite; when a regression is caught, a structured failure bundle is fed directly to the coding agent to fix the root cause, re-run, and pass green automatically.
+As AI agents write and deploy code in production, traditional manual QA is a bottleneck. AgentPulse pairs continuous telemetry with **TestSprite 3.0** autonomous testing to establish **"The Self-Healing Loop"**: every pull request gets its own Vercel preview, and the TestSprite GitHub App runs the project's end-to-end suite against that preview. When a regression is caught, the check fails and blocks the merge, the failure report goes back to the coding agent to fix the root cause, and the check reruns on its own.
 
 ---
 
@@ -49,17 +49,17 @@ As AI agents write and deploy code in production, traditional manual QA is a bot
 
 ## 🧪 What the Test Suite Covers
 
-In accordance with TestSprite Hackathon Season 4 submission criteria, the autonomous verification suite covers end-to-end functionality, regression guards, and API resilience:
+The end-to-end suite lives in the TestSprite 3.0 web portal (project `agentpulse-pi`). It was generated from the live app at https://agentpulse-pi.vercel.app and has **37 test cases across 5 use cases**:
 
-| Suite ID | Category | Scenario & Scope | Assertions & Validation |
-|:---|:---|:---|:---|
-| **E2E-01** | UI / Pipeline Studio | Visual DAG Canvas & Node Transitions | Validates pipeline topology, step sequencing (Lint &rarr; E2E &rarr; Telemetry), and state propagation without UI deadlocks. |
-| **E2E-02** | Telemetry | Fleet Success Rate & MTTR Engine | Tests streaming metric ingestion, rolling 24h calculations, and mathematical safety against zero-division errors. |
-| **E2E-03** | Chaos Engine | Webhook Simulator & Network Latency | Injects 500ms–2500ms simulated network latency, verifying graceful UI fallback, retry headers, and zero uncaught exceptions. |
-| **E2E-04** | Scenario Portal | Real-time Scenario Creation Form | Verifies client-side validation schema, rejection of empty/whitespace IDs, and instant synchronization with local state. |
-| **REG-01** | Regression Guard | Fleet Reliability Precision Flaw | **Demonstrated in PR #1**: Traps precision truncation regression in reliability math and validates automated self-healing fix. |
-| **API-01** | Contract / Health | Synthetic Telemetry Ingestion Endpoint | Enforces JSON schema contract, HTTP 200 response time (< 200ms), and proper error code responses on bad payloads. |
-| **SEC-01** | Security Guard | Secret & Token Sanitization | Ensures sensitive environment variables, GitHub tokens, and API credentials are never leaked in client-side traces or logs. |
+| Use case | Cases | What it verifies |
+|:---|:---:|:---|
+| **Fleet Overview** (`FLE-001`–`FLE-005`) | 5 | Fleet health KPIs render; the overview links through to the pipeline workflow, the self-healing loop, monitored pipelines and live verification activity. |
+| **Pipeline Studio** (`PIP-001`–`PIP-006`) | 6 | Running the default verification pipeline, the execution DAG, guardrail configuration, switching pipeline presets, remediation on failure, and the telemetry summary. |
+| **Test Scenarios** (`SCE-001`–`SCE-014`) | 14 | The scenario repository: browsing, filtering by category, opening a scenario, the new-scenario flow, running a pipeline from the studio, policy and guardrail review, and navigation to the loop and fleet views. `SCE-011`–`SCE-014` cover input validation in the new-scenario form: expected status codes outside 100–599, or empty, are rejected, and target paths are trimmed. |
+| **Self-Healing Verification Loop** (`LOO-001`–`LOO-006`) | 6 | The loop overview and each stage (write, test, fix, test again), ending with the loop closing on a pushed commit. |
+| **Chaos Testing & Webhook Simulation** (`CHA-001`–`CHA-006`) | 6 | Dispatching a simulated webhook, latency and assertion-fault injection, model-quota exhaustion, jitter and packet-drop simulation, and the resulting fleet metrics. |
+
+Unit tests (`npm test`, Node's built-in test runner over [`tests/`](tests/)) run in CI alongside the build.
 
 ---
 
@@ -70,7 +70,7 @@ In accordance with TestSprite Hackathon Season 4 submission criteria, the autono
 - **Language**: TypeScript (Strict typing)
 - **Styling**: Tailwind CSS v4 + Custom Cybernetic Dark Glassmorphism
 - **Icons**: Lucide React
-- **Automated Verification**: TestSprite 3.0 Portal + GitHub Actions Action (`TestSprite/testsprite-action@v1`)
+- **Automated Verification**: TestSprite 3.0 web portal suite (37 E2E cases) run by the TestSprite GitHub App against every pull request's Vercel preview, behind a merge gate; build and unit tests in GitHub Actions
 
 ---
 
@@ -93,67 +93,49 @@ npm run dev
 
 ---
 
-```
-
----
-
 ## 🔄 TestSprite 3.0 Integration & "The Self-Healing Loop"
 
-AgentPulse is verified on every PR using the official GitHub Actions workflow:
+Every pull request gets two independent checks:
 
-```yaml
-name: TestSprite Continuous Verification
-on: [pull_request, push]
+1. **TestSprite GitHub App (end-to-end).** Every pull request gets a Vercel preview deployment. A pull-request trigger in the TestSprite portal (project `agentpulse-pi`) fires when that preview is live, runs the full suite against the PR's own preview URL, and posts its report as a `testsprite` comment on the PR. The merge gate is on: TestSprite reports a status check, and branch protection on `main` requires it, so a PR can't merge until the suite passes.
+2. **GitHub Actions: `Build & Unit Tests`** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `npm ci`, `npm run build` and `npm test`.
 
-jobs:
-  verify:
-    name: TestSprite 3.0 Verification Gate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
-      - name: Run TestSprite Autonomous Verification
-        uses: TestSprite/testsprite-action@v1
-        continue-on-error: true
-        with:
-          api-key: ${{ secrets.TESTSPRITE_API_KEY }}
-          project-id: ${{ secrets.TESTSPRITE_PROJECT_ID }}
-          fail-on-skipped: false
-```
+When either check fails, the failure report goes back to the coding agent, which fixes the root cause and pushes; both checks then rerun on their own.
 
-### 🏆 Proof of The Self-Healing Loop (Hackathon Rubric: 40/40 Pts)
+### Season 4 loop on PR #5
 
-We verified the complete 4-step Autonomous Self-Healing loop live in production on Pull Request [#1](https://github.com/naufalfx805-source/agentpulse/pull/1):
+[PR #5](https://github.com/naufalfx805-source/agentpulse/pull/5) moved the TestSprite check onto per-PR previews and added four input-validation cases (`SCE-011`–`SCE-014`) for the new-scenario form.
+
+1. **Test**: on the first push, the TestSprite check ran 37 cases against the PR's own preview and failed 4 of them (33/37). The form accepted an expected status of `0`, `999` or blank, and rejected a target path with surrounding spaces. The merge gate held the PR.
+2. **Fix**: the next commit moves the form's validation into [`src/lib/scenarioValidation.mjs`](src/lib/scenarioValidation.mjs): the expected status must be a whole number from 100 to 599, and the title and target path are trimmed before they are checked. Unit tests cover it in [`tests/scenario-validation.test.mjs`](tests/scenario-validation.test.mjs).
+3. **Test again**: the preview redeployed and the check reran on its own: 35/37. The `0`, `999` and trimming cases now passed, but TestSprite caught a subtler bug in the blank-status case. Clearing the field by script or autofill doesn't fire React's `onChange`, so the form still validated a stale `200` and created the scenario.
+4. **Fix**: the form now validates the values actually in its fields (`FormData` on submit) instead of possibly stale React state.
+5. **Test again**: the check reran on its own; the PR shows the result.
+
+### Self-healing loop walkthrough (PR #1)
+
+[PR #1](https://github.com/naufalfx805-source/agentpulse/pull/1) (opened Oct 12, before the Season 4 build window) walked through the loop with the CI gate:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Developer / Agent
-    participant GitHub as GitHub Actions (CI)
-    participant TestSprite as TestSprite 3.0 Engine
-    participant SelfHealer as AgentPulse Remediation Agent
+    actor Dev as Developer or Agent
+    participant CI as GitHub Actions CI
+    participant Fixer as Coding agent
 
-    Developer->>GitHub: 1. Push Feature / Intentional Regression (Commit af6b8e6)
-    GitHub->>TestSprite: Trigger TestSprite Headless Verification
-    TestSprite-->>GitHub: ❌ Regression Caught: Fleet reliability rounding flaw
-    GitHub-->>SelfHealer: 2. Emit Structured Diagnostic Bundle (RED)
-    SelfHealer->>SelfHealer: Analyze AST diff & failure stack trace
-    SelfHealer->>GitHub: 3. Commit Autonomous Remediation Patch (Commit c63fd95)
-    GitHub->>TestSprite: Re-run Verification Gate automatically
-    TestSprite-->>GitHub: ✅ 100% Pass: All 7 suites green, 0 failures
-    GitHub->>Developer: 4. Verification Gate Turns GREEN & Merged (Commit d413519)
+    Dev->>CI: Push a commit with an intentional regression (af6b8e6)
+    CI-->>Dev: ❌ Unit tests catch the fleet-reliability rounding bug
+    Dev->>Fixer: Hand over the failing test output
+    Fixer->>CI: Push the root-cause fix (c63fd95)
+    CI-->>Dev: ✅ Build and tests green, PR merged (d413519)
 ```
 
-1. **Step 1 — Maker**: Commit [`af6b8e6`](https://github.com/naufalfx805-source/agentpulse/commit/af6b8e6) pushed an intentional regression in fleet reliability precision.
-2. **Step 2 — Checker**: TestSprite Verification Gate caught the regression in CI, failing the check run.
-3. **Step 3 — Maker**: Agent consumed the failure diagnostic bundle and committed automated patch [`c63fd95`](https://github.com/naufalfx805-source/agentpulse/commit/c63fd95).
-4. **Step 4 — Checker**: TestSprite automatically re-verified the patch, turning all checks **100% GREEN**, squashed & merged into `main` ([#1](https://github.com/naufalfx805-source/agentpulse/pull/1)).
+1. **Write**: commit [`af6b8e6`](https://github.com/naufalfx805-source/agentpulse/commit/af6b8e6) introduced an intentional regression in the fleet-reliability calculation.
+2. **Test**: the unit tests in [`tests/self-healing-verification.test.mjs`](tests/self-healing-verification.test.mjs) caught it and failed the CI check.
+3. **Fix**: the agent read the failing test output and pushed patch [`c63fd95`](https://github.com/naufalfx805-source/agentpulse/commit/c63fd95).
+4. **Test again**: CI reran on its own and went green, and the PR was squashed into `main`.
+
+From Season 4 on, the TestSprite GitHub App adds its end-to-end check to this loop on every pull request.
 
 ---
 

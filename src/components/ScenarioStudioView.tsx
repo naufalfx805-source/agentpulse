@@ -14,6 +14,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { TestScenario } from '../types/agent';
+import { validateNewScenario } from '../lib/scenarioValidation.mjs';
 
 interface ScenarioStudioViewProps {
   scenarios: TestScenario[];
@@ -40,31 +41,37 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
     return s.category === filter;
   });
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!title.trim()) {
-      setFormError('Scenario Title is required.');
+    // Validate what is actually in the fields. Autofill, browser extensions and
+    // scripted input can change a field without firing onChange, which would
+    // leave the React state stale (e.g. still "200" after the field was cleared).
+    const form = new FormData(e.currentTarget);
+    const result = validateNewScenario({
+      title: String(form.get('title') ?? ''),
+      targetPath: String(form.get('targetPath') ?? ''),
+      expectedStatus: String(form.get('expectedStatus') ?? ''),
+    });
+    if ('error' in result) {
+      setFormError(result.error);
       return;
     }
-    if (!targetPath.trim() || !targetPath.startsWith('/')) {
-      setFormError('Target Path must start with a valid relative slash (e.g. /api/v1/resource).');
-      return;
-    }
+    const { value } = result;
 
     const newScenario: TestScenario = {
       id: `ts-${Date.now().toString().slice(-4)}`,
-      title: title.trim(),
+      title: value.title,
       category,
-      targetPath: targetPath.trim(),
-      expectedStatus: parseInt(expectedStatus, 10) || 200,
+      targetPath: value.targetPath,
+      expectedStatus: value.expectedStatus,
       assertions: [
-        { field: 'response.status', operator: 'equals', expected: expectedStatus },
+        { field: 'response.status', operator: 'equals', expected: String(value.expectedStatus) },
         { field: 'latency', operator: 'less_than', expected: '1000' },
       ],
       lastStatus: 'passed',
       durationMs: Math.floor(Math.random() * 300) + 150,
       flakinessScore: 0.0,
-      description: `Custom scenario created for path ${targetPath.trim()}.`,
+      description: `Custom scenario created for path ${value.targetPath}.`,
     };
 
     onAddScenario(newScenario);
@@ -224,6 +231,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                 </label>
                 <input
                   type="text"
+                  name="title"
                   placeholder="e.g. Verify Token Budget Guard On Large Request"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -253,6 +261,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                   </label>
                   <input
                     type="number"
+                    name="expectedStatus"
                     value={expectedStatus}
                     onChange={(e) => setExpectedStatus(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500"
@@ -266,6 +275,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                 </label>
                 <input
                   type="text"
+                  name="targetPath"
                   placeholder="/api/v1/verify/endpoint"
                   value={targetPath}
                   onChange={(e) => setTargetPath(e.target.value)}

@@ -43,3 +43,6 @@ next-env.d.ts
 # videos (keep repo lightweight, video stored locally)
 videos/*.mp4
 videos/*.webm
+
+# Playwright browser profile — never commit browser cache/cookies
+.playwright-data/
