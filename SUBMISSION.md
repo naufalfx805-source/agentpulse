@@ -16,21 +16,20 @@
 As AI agents (Antigravity, Cursor, Claude Code, Codex) increasingly generate production code at scale, traditional manual quality assurance collapses. Software cannot rely on fragile human reviews for autonomous continuous delivery.
 
 **AgentPulse** solves this by establishing **"The Self-Healing Loop"** using **TestSprite 3.0**:
-1. When an agent commits code, TestSprite runs headless verification in GitHub Actions.
+1. When an agent opens or updates a pull request, CI runs the build and unit tests, then the TestSprite GitHub App runs the 33-case end-to-end suite against the live app.
 2. If tests catch a bug or regression, a structured failure diagnostic payload is dispatched to the agent.
 3. The agent autonomously synthesizes the fix, patches the codebase, and pushes the remediation commit.
-4. TestSprite re-verifies the fix automatically, turning the PR **100% GREEN** without manual developer intervention.
+4. Both checks rerun automatically on the new commit, and the PR goes green.
 
 ---
 
-## 📊 Rubric Alignment & Scoring Matrix
+## 📊 How AgentPulse maps to the Season 4 judging criteria
 
-| Criterion | Max Points | How AgentPulse Delivers |
-| :--- | :---: | :--- |
-| **The Self-Healing Loop** | **40 / 40** | Documented and proven on [PR #1](https://github.com/naufalfx805-source/agentpulse/pull/1): intentional regression commit [`af6b8e6`](https://github.com/naufalfx805-source/agentpulse/commit/af6b8e6) caught in CI &rarr; automated remediation patch [`c63fd95`](https://github.com/naufalfx805-source/agentpulse/commit/c63fd95) pushed &rarr; CI verified 100% green &rarr; squashed into `main`. |
-| **TestSprite 3.0 Integration** | **30 / 30** | Headed browser verification on TestSprite Web Portal + Headless CI action (`TestSprite/testsprite-action@v1`) + CLI schema compliance. |
-| **Real-world Utility & UX** | **30 / 30** | Production-ready Next.js 16.4 App Router app on Vercel with real-time fleet telemetry, multi-step pipeline DAG studio, chaos simulation, and cybernetic dark UI. |
-| **Total Target** | **100 / 100** | **Grand Prize Candidate** |
+| Criterion (weight) | Where to look |
+| :--- | :--- |
+| **Project quality** (40) | The live app at https://agentpulse-pi.vercel.app: fleet telemetry, the pipeline DAG studio, the scenario repository, the chaos and webhook simulator, and the self-healing loop inspector. |
+| **Tests that run themselves** (40) | TestSprite portal project `agentpulse-pi` (33 E2E cases across 5 use cases, all passing), run by the TestSprite GitHub App on every pull request, plus `Build & Unit Tests` in GitHub Actions. |
+| **Innovation** (20) | The app visualises and simulates the same agent-and-verifier loop that TestSprite runs on this repo's own pull requests. |
 
 ---
 
@@ -58,23 +57,23 @@ We recorded an automated, high-fidelity 720p HD walkthrough video capturing the 
 ### [0:55 - 1:35] "The Self-Healing Loop" in Action
 > *"The heart of AgentPulse is the official TestSprite Self-Healing Loop. Let's look at Pull Request #1 on our repo. 
 First, the Maker agent pushed a feature containing a regression in fleet reliability calculations (commit af6b8e6). 
-Second, TestSprite's verification gate caught the failure in CI.
+Second, the CI unit tests caught the failure.
 Third, our self-healing agent ingested the diagnostic bundle and committed the root-cause fix (commit c63fd95).
-Fourth, TestSprite immediately re-tested the patch, all 7 verification gates turned green, and the PR was merged automatically. Zero human intervention needed."*
+Fourth, CI reran on its own and went green, and the PR was merged. Today the TestSprite GitHub App also runs its 33-case end-to-end check on every PR."*
 
 ### [1:35 - 2:00] Conclusion & Track B Contributions
 > *"To ensure seamless CLI interoperability, I also contributed upstream to TestSprite/testsprite-cli — PR #354 (structured debug logging for silent catch blocks), backed by accepted hackathon issue #186 and passing TestSprite CI. AgentPulse proves that autonomous agents and TestSprite 3.0 are the future of software engineering. Thank you!"*
 
 ---
 
-## 💬 Discord #hackathon-submissions Official Post Template
+## 💬 Discord #hackathon-s4-submissions Post
 
 ```markdown
 🚀 **Submission: AgentPulse — Autonomous AI Agent Verification & Self-Healing Ops (Season 4 Project Track)**
 
-1. **Pull Request with TestSprite Check (Required)**:
-https://github.com/naufalfx805-source/agentpulse/pull/1
-*(Demonstrates the full 4-step Self-Healing Loop: regression caught in CI af6b8e6 -> diagnostic bundle fed to agent -> fix committed c63fd95 -> TestSprite re-tested 100% green -> merged d413519)*
+1. **Pull Request with TestSprite Check (Required, opened in the build window)**:
+https://github.com/naufalfx805-source/agentpulse/pull/4
+*(The TestSprite GitHub App runs the 33-case portal suite on this PR. Earlier self-healing walkthrough: https://github.com/naufalfx805-source/agentpulse/pull/1)*
 
 2. **Live Public URL (Required)**:
 https://agentpulse-pi.vercel.app
@@ -90,6 +89,6 @@ https://github.com/naufalfx805-source/agentpulse/releases/download/v1.0.0/agentp
 
 5. **Public Repository**:
 https://github.com/naufalfx805-source/agentpulse
-*(Complete with Next.js 16.4 source, GitHub Actions workflow with TestSprite Action v1, and detailed suite coverage)*
+*(Next.js 16.4 source, the CI workflow, and a README section on what the TestSprite suite covers)*
 ```
 
