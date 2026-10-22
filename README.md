@@ -102,6 +102,14 @@ Every pull request gets two independent checks:
 
 When either check fails, the failure report goes back to the coding agent, which fixes the root cause and pushes; both checks then rerun on their own.
 
+### Season 4 loop on PR #5
+
+[PR #5](https://github.com/naufalfx805-source/agentpulse/pull/5) moved the TestSprite check onto per-PR previews and added four input-validation cases (`SCE-011`–`SCE-014`) for the new-scenario form.
+
+1. **Test**: on the first push, the TestSprite check ran 37 cases against the PR's own preview and failed 4 of them (33/37). The form accepted an expected status of `0`, `999` or blank, and rejected a target path with surrounding spaces. The merge gate held the PR.
+2. **Fix**: the next commit moves the form's validation into [`src/lib/scenarioValidation.mjs`](src/lib/scenarioValidation.mjs): the expected status must be a whole number from 100 to 599, and the title and target path are trimmed before they are checked. Unit tests cover it in [`tests/scenario-validation.test.mjs`](tests/scenario-validation.test.mjs).
+3. **Test again**: the preview redeployed and the TestSprite check reran on its own; the PR shows the result.
+
 ### Self-healing loop walkthrough (PR #1)
 
 [PR #1](https://github.com/naufalfx805-source/agentpulse/pull/1) (opened Oct 12, before the Season 4 build window) walked through the loop with the CI gate:

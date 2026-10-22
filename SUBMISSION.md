@@ -72,8 +72,8 @@ Fourth, CI reran on its own and went green, and the PR was merged. Today the Tes
 🚀 **Submission: AgentPulse — Autonomous AI Agent Verification & Self-Healing Ops (Season 4 Project Track)**
 
 1. **Pull Request with TestSprite Check (Required, opened in the build window)**:
-https://github.com/naufalfx805-source/agentpulse/pull/4
-*(The TestSprite GitHub App runs the 33-case portal suite on this PR. Earlier self-healing walkthrough: https://github.com/naufalfx805-source/agentpulse/pull/1)*
+https://github.com/naufalfx805-source/agentpulse/pull/5
+*(TestSprite ran 37 cases against the PR's own preview, failed 4 on a real form-validation bug and held the merge; the fix commit reran the check. Earlier self-healing walkthrough: https://github.com/naufalfx805-source/agentpulse/pull/1)*
 
 2. **Live Public URL (Required)**:
 https://agentpulse-pi.vercel.app
