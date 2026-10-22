@@ -41,9 +41,17 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
     return s.category === filter;
   });
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = validateNewScenario({ title, targetPath, expectedStatus });
+    // Validate what is actually in the fields. Autofill, browser extensions and
+    // scripted input can change a field without firing onChange, which would
+    // leave the React state stale (e.g. still "200" after the field was cleared).
+    const form = new FormData(e.currentTarget);
+    const result = validateNewScenario({
+      title: String(form.get('title') ?? ''),
+      targetPath: String(form.get('targetPath') ?? ''),
+      expectedStatus: String(form.get('expectedStatus') ?? ''),
+    });
     if ('error' in result) {
       setFormError(result.error);
       return;
@@ -223,6 +231,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                 </label>
                 <input
                   type="text"
+                  name="title"
                   placeholder="e.g. Verify Token Budget Guard On Large Request"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -252,6 +261,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                   </label>
                   <input
                     type="number"
+                    name="expectedStatus"
                     value={expectedStatus}
                     onChange={(e) => setExpectedStatus(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500"
@@ -265,6 +275,7 @@ export const ScenarioStudioView: React.FC<ScenarioStudioViewProps> = ({
                 </label>
                 <input
                   type="text"
+                  name="targetPath"
                   placeholder="/api/v1/verify/endpoint"
                   value={targetPath}
                   onChange={(e) => setTargetPath(e.target.value)}

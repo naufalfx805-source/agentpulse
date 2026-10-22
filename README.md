@@ -108,7 +108,9 @@ When either check fails, the failure report goes back to the coding agent, which
 
 1. **Test**: on the first push, the TestSprite check ran 37 cases against the PR's own preview and failed 4 of them (33/37). The form accepted an expected status of `0`, `999` or blank, and rejected a target path with surrounding spaces. The merge gate held the PR.
 2. **Fix**: the next commit moves the form's validation into [`src/lib/scenarioValidation.mjs`](src/lib/scenarioValidation.mjs): the expected status must be a whole number from 100 to 599, and the title and target path are trimmed before they are checked. Unit tests cover it in [`tests/scenario-validation.test.mjs`](tests/scenario-validation.test.mjs).
-3. **Test again**: the preview redeployed and the TestSprite check reran on its own; the PR shows the result.
+3. **Test again**: the preview redeployed and the check reran on its own: 35/37. The `0`, `999` and trimming cases now passed, but TestSprite caught a subtler bug in the blank-status case. Clearing the field by script or autofill doesn't fire React's `onChange`, so the form still validated a stale `200` and created the scenario.
+4. **Fix**: the form now validates the values actually in its fields (`FormData` on submit) instead of possibly stale React state.
+5. **Test again**: the check reran on its own; the PR shows the result.
 
 ### Self-healing loop walkthrough (PR #1)
 
