@@ -90,7 +90,7 @@ All 26/26 Scenarios Passed (0 flakiness).
       <div className="p-6 md:p-8 rounded-2xl border border-violet-500/30 bg-gradient-to-br from-violet-950/40 via-slate-900/60 to-slate-950 p-6 backdrop-blur-xl space-y-3">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Hackathon Rubric Core (40/40 Points)</span>
+          <span>One Week. One Loop. Every PR.</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-extrabold text-slate-100 tracking-tight">
           The TestSprite Self-Healing Verification Loop
@@ -208,12 +208,12 @@ All 26/26 Scenarios Passed (0 flakiness).
         </p>
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <a
-            href="https://github.com/TestSprite/testsprite-cli/pull/354"
+            href="https://github.com/naufalfx805-source/agentpulse/pull/5"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 text-xs font-mono font-semibold transition-colors"
           >
-            <span>PR #354 (TestSprite CI green)</span>
+            <span>PR #5 (TestSprite: 33/37 → 37/37)</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
           <span className="text-xs text-slate-500 font-mono">
